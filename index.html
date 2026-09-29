@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<title>Prepositions of Time (revision)</title>
+<link rel="icon" type="image/png" sizes="48x48" href="favicon.png">
+<style>
+  :root{
+    --bg:#0f1116;
+    --card:#1a1d27;
+    --border:#2b2f3a;
+    --text:#e8e9ee;
+    --muted:#9aa0ad;
+    --accent:#5b8def;
+    --green:#2fbf71;
+    --green-bg:#12321f;
+    --green-text:#c9f6dc;
+    --red:#e6534a;
+    --red-bg:#3a1616;
+    --red-text:#ffd0cc;
+    --input-bg:#12141b;
+  }
+  html[data-theme="light"]{
+    --bg:#f4f5f8;
+    --card:#ffffff;
+    --border:#dfe2ea;
+    --text:#1b1d24;
+    --muted:#6b7180;
+    --accent:#3763d6;
+    --green:#1f9d5c;
+    --green-bg:#e4f8ec;
+    --green-text:#0f5c33;
+    --red:#d63c33;
+    --red-bg:#fdeceb;
+    --red-text:#8a231c;
+    --input-bg:#f9f9fb;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    padding:24px 16px 60px;
+    transition:background .2s, color .2s;
+  }
+  .wrap{max-width:760px;margin:0 auto;}
+  h1{text-align:center;font-size:1.5rem;margin-bottom:4px;}
+  .sub{text-align:center;color:var(--muted);font-size:0.9rem;margin-bottom:20px;}
+  .top-bar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    position:sticky;
+    top:0;
+    background:var(--bg);
+    padding:10px 0;
+    z-index:5;
+    border-bottom:1px solid var(--border);
+    margin-bottom:16px;
+    flex-wrap:wrap;
+  }
+  #timer{
+    font-size:1.3rem;
+    font-weight:700;
+    padding:6px 14px;
+    border-radius:8px;
+    background:var(--card);
+    border:1px solid var(--border);
+    min-width:80px;
+    text-align:center;
+  }
+  #timer.warn{color:var(--red);border-color:var(--red);}
+  #score{font-size:0.95rem;color:var(--muted);}
+  .top-right{display:flex;align-items:center;gap:8px;}
+  #theme-toggle, #check-btn{
+    background:var(--card);
+    color:var(--text);
+    border:1px solid var(--border);
+    padding:6px 12px;
+    border-radius:8px;
+    font-size:0.85rem;
+    cursor:pointer;
+  }
+  #check-btn{
+    background:var(--accent);
+    color:#fff;
+    border:none;
+    font-weight:600;
+  }
+  #check-btn:disabled{opacity:0.5;cursor:default;}
+  .item{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:12px 16px;
+    margin-bottom:8px;
+  }
+  .item-num{
+    color:var(--muted);
+    font-size:0.78rem;
+    margin-bottom:4px;
+  }
+  .line{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:baseline;
+    column-gap:8px;
+    row-gap:4px;
+  }
+  .phrase{
+    font-size:1.02rem;
+    line-height:1.9;
+  }
+  .dash{
+    color:var(--muted);
+  }
+  .ru{
+    font-size:0.92rem;
+    color:var(--muted);
+    font-style:italic;
+  }
+  input.gap{
+    width:auto;
+    min-width:56px;
+    max-width:110px;
+    padding:4px 8px;
+    margin:0 2px;
+    border-radius:6px;
+    border:1px solid var(--border);
+    background:var(--input-bg);
+    color:var(--text);
+    font-size:0.98rem;
+    text-align:center;
+    outline:none;
+    transition:background .15s, border-color .15s;
+  }
+  input.gap:focus{border-color:var(--accent);}
+  input.gap.correct{
+    background:var(--green-bg);
+    border-color:var(--green);
+    color:var(--green-text);
+  }
+  input.gap.incorrect{
+    background:var(--red-bg);
+    border-color:var(--red);
+    color:var(--red-text);
+  }
+  input.gap:disabled{opacity:0.75;}
+  #finish-overlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(10,11,15,0.55);
+    align-items:center;
+    justify-content:center;
+    z-index:20;
+  }
+  #finish-box{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:28px 30px;
+    text-align:center;
+    max-width:340px;
+    color:var(--text);
+  }
+  #finish-box h2{margin-top:0;}
+  #finish-box p{color:var(--muted);}
+  button.primary{
+    background:var(--accent);
+    color:#fff;
+    border:none;
+    padding:10px 18px;
+    border-radius:8px;
+    font-size:0.95rem;
+    cursor:pointer;
+    margin-top:10px;
+  }
+  button.primary:hover{opacity:0.9;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Prepositions of Time (revision)</h1>
+  <p class="sub">Fill in the missing preposition(s), then press Check. You have 2 minutes.</p>
+
+  <div class="top-bar">
+    <div id="timer">02:00</div>
+    <div id="score">Not checked yet</div>
+    <div class="top-right">
+      <button id="check-btn" onclick="checkAnswers()">Check</button>
+      <button id="theme-toggle" onclick="toggleTheme()">🌙 Dark</button>
+    </div>
+  </div>
+
+  <div id="quiz"></div>
+</div>
+
+<div id="finish-overlay">
+  <div id="finish-box">
+    <h2>Time's up!</h2>
+    <p id="final-score"></p>
+    <button class="primary" onclick="location.reload()">Try again</button>
+  </div>
+</div>
+
+<script>
+// Each item: segments (text / blank with one or more accepted answers) + Russian translation.
+const data = [
+  { segments: [ {type:"blank", accepted:["on"]}, {type:"text", value:" Monday"} ], ru: "в понедельник" },
+  { segments: [ {type:"blank", accepted:["on"]}, {type:"text", value:" Friday morning"} ], ru: "в пятницу утром" },
+  { segments: [ {type:"blank", accepted:["on"]}, {type:"text", value:" 22 June"} ], ru: "22 июня" },
+  { segments: [ {type:"blank", accepted:["on"]}, {type:"text", value:" my birthday"} ], ru: "в мой день рождения" },
+  { segments: [ {type:"blank", accepted:["on"]}, {type:"text", value:" Christmas Day"} ], ru: "на Рождество / в день Рождества" },
+  { segments: [ {type:"blank", accepted:["on","at"]}, {type:"text", value:" the weekend"} ], ru: "на выходных / в выходные" },
+  { segments: [ {type:"blank", accepted:["in"]}, {type:"text", value:" January"} ], ru: "в январе" },
+  { segments: [ {type:"blank", accepted:["in"]}, {type:"text", value:" 2005"} ], ru: "в 2005 году" },
+  { segments: [ {type:"blank", accepted:["in"]}, {type:"text", value:" summer"} ], ru: "летом" },
+  { segments: [ {type:"blank", accepted:["in"]}, {type:"text", value:" the morning / afternoon / evening"} ], ru: "утром / днём / вечером" },
+  { segments: [ {type:"blank", accepted:["in"]}, {type:"text", value:" the 1990s"} ], ru: "в 1990-х годах" },
+  { segments: [ {type:"blank", accepted:["in"]}, {type:"text", value:" the 21st century"} ], ru: "в XXI веке" },
+  { segments: [ {type:"blank", accepted:["in"]}, {type:"text", value:" the past / future"} ], ru: "в прошлом / будущем" },
+  { segments: [ {type:"blank", accepted:["in"]}, {type:"text", value:" a few minutes"} ], ru: "через несколько минут" },
+  { segments: [ {type:"blank", accepted:["in"]}, {type:"text", value:" two weeks"} ], ru: "через две недели" },
+  { segments: [ {type:"blank", accepted:["at"]}, {type:"text", value:" 5 o'clock"} ], ru: "в 5 часов" },
+  { segments: [ {type:"blank", accepted:["at"]}, {type:"text", value:" noon / midnight"} ], ru: "в полдень / полночь" },
+  { segments: [ {type:"blank", accepted:["at"]}, {type:"text", value:" night"} ], ru: "ночью" },
+  { segments: [ {type:"blank", accepted:["at"]}, {type:"text", value:" the moment"} ], ru: "в данный момент / сейчас" },
+  { segments: [ {type:"blank", accepted:["at"]}, {type:"text", value:" the beginning / end of the day"} ], ru: "в начале / конце дня" },
+  { segments: [ {type:"blank", accepted:["at"]}, {type:"text", value:" the age of 18"} ], ru: "в возрасте 18 лет" },
+  { segments: [ {type:"blank", accepted:["from"]}, {type:"text", value:" time "}, {type:"blank", accepted:["to"]}, {type:"text", value:" time"} ], ru: "время от времени" },
+  { segments: [ {type:"blank", accepted:["in"]}, {type:"text", value:" time"} ], ru: "вовремя, но немного заранее" },
+  { segments: [ {type:"blank", accepted:["on"]}, {type:"text", value:" time"} ], ru: "точно в срок, вовремя" },
+  { segments: [ {type:"blank", accepted:["since"]}, {type:"text", value:" Monday / 2010 / last year"} ], ru: "с понедельника / 2010 года / прошлого года" },
+  { segments: [ {type:"blank", accepted:["for"]}, {type:"text", value:" a long time"} ], ru: "в течение долгого времени" },
+  { segments: [ {type:"blank", accepted:["throughout"]}, {type:"text", value:" the year"} ], ru: "на протяжении всего года" },
+  { segments: [ {type:"blank", accepted:["for"]}, {type:"text", value:" three years / 2 hours"} ], ru: "в течение трёх лет" },
+  { segments: [ {type:"blank", accepted:["from"]}, {type:"text", value:" Monday "}, {type:"blank", accepted:["to"]}, {type:"text", value:" Friday"} ], ru: "с понедельника по пятницу" },
+  { segments: [ {type:"blank", accepted:["within"]}, {type:"text", value:" two weeks"} ], ru: "в течение двух недель" },
+  { segments: [ {type:"blank", accepted:["by"]}, {type:"text", value:" Friday"} ], ru: "к пятнице" },
+  { segments: [ {type:"blank", accepted:["until","till"]}, {type:"text", value:" Friday"} ], ru: "до пятницы" }
+];
+
+function shuffle(arr){
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function normalize(str){
+  return str.toLowerCase().trim().replace(/[^a-z]/g, "");
+}
+
+const shuffledData = shuffle(data);
+const quizEl = document.getElementById("quiz");
+
+let totalBlanks = 0;
+const allInputs = [];
+let timeLeft = 120;
+let timerId = null;
+let finished = false;
+
+shuffledData.forEach((item, idx) => {
+  const row = document.createElement("div");
+  row.className = "item";
+
+  const numEl = document.createElement("div");
+  numEl.className = "item-num";
+  numEl.textContent = "Item " + (idx + 1) + " of " + shuffledData.length;
+
+  const lineEl = document.createElement("div");
+  lineEl.className = "line";
+
+  const phraseEl = document.createElement("div");
+  phraseEl.className = "phrase";
+
+  item.segments.forEach(seg => {
+    if (seg.type === "text"){
+      phraseEl.appendChild(document.createTextNode(seg.value));
+    } else {
+      totalBlanks++;
+      const input = document.createElement("input");
+      input.type = "text";
+      input.className = "gap";
+      input.autocomplete = "off";
+      input.spellcheck = false;
+      input.dataset.accepted = JSON.stringify(seg.accepted);
+
+      input.addEventListener("input", () => {
+        input.classList.remove("correct", "incorrect");
+      });
+
+      allInputs.push(input);
+      phraseEl.appendChild(input);
+    }
+  });
+
+  const dashEl = document.createElement("span");
+  dashEl.className = "dash";
+  dashEl.textContent = "—";
+
+  const ruEl = document.createElement("div");
+  ruEl.className = "ru";
+  ruEl.textContent = item.ru;
+
+  lineEl.appendChild(phraseEl);
+  lineEl.appendChild(dashEl);
+  lineEl.appendChild(ruEl);
+
+  row.appendChild(numEl);
+  row.appendChild(lineEl);
+  quizEl.appendChild(row);
+});
+
+function checkAnswers(){
+  if (finished) return;
+  finished = true;
+  clearInterval(timerId);
+
+  let correctCount = 0;
+  allInputs.forEach(input => {
+    input.disabled = true;
+    const accepted = JSON.parse(input.dataset.accepted);
+    const typed = normalize(input.value);
+    const isCorrect = accepted.some(a => normalize(a) === typed);
+    if (isCorrect){
+      input.classList.add("correct");
+      input.classList.remove("incorrect");
+      correctCount++;
+    } else {
+      input.classList.add("incorrect");
+      input.classList.remove("correct");
+    }
+  });
+
+  document.getElementById("score").textContent = correctCount + " / " + totalBlanks + " correct";
+  document.getElementById("check-btn").disabled = true;
+
+  document.getElementById("final-score").textContent =
+    "You got " + correctCount + " out of " + totalBlanks + " gaps correct.";
+  document.getElementById("finish-overlay").style.display = "flex";
+}
+
+function formatTime(t){
+  const m = Math.floor(t / 60).toString().padStart(2, "0");
+  const s = (t % 60).toString().padStart(2, "0");
+  return m + ":" + s;
+}
+
+function tick(){
+  timeLeft--;
+  const timerEl = document.getElementById("timer");
+  timerEl.textContent = formatTime(Math.max(timeLeft, 0));
+  if (timeLeft <= 10) timerEl.classList.add("warn");
+  if (timeLeft <= 0){
+    clearInterval(timerId);
+    checkAnswers();
+  }
+}
+
+function toggleTheme(){
+  const html = document.documentElement;
+  const btn = document.getElementById("theme-toggle");
+  if (html.getAttribute("data-theme") === "light"){
+    html.removeAttribute("data-theme");
+    btn.textContent = "☀ Light";
+  } else {
+    html.setAttribute("data-theme", "light");
+    btn.textContent = "🌙 Dark";
+  }
+}
+
+timerId = setInterval(tick, 1000);
+</script>
+</body>
+</html>
